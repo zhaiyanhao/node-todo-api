@@ -11,5 +11,14 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp',(err,db) => {
 
     });
 
+
+    db.collection('Todos').find({completed:true}).count().then((count)=>{
+        console.log(count);
+    },(err)=>{
+
+    });
+
+
+
     db.close();
 });
