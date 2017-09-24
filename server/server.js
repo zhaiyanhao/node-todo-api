@@ -1,26 +1,35 @@
-var mongoose = require('mongoose');
+var express = require('express');
+var bodyParser = require('body-parser');
 
-mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/TodoApp');
+var {mongoose} = require('./db/mongoose');
+var {Todo} = require('./models/todo');
+var {User} = require('./models/user');
 
-//save new somgthing
+var app = express();
 
-var Todo = mongoose.model('Todo',{
-    text:{
-        type:String,
-        required:true,
-        minlength:5
+app.use(bodyParser.json());
 
-    },
-    completed:{
-        type:Boolean,
-        default:false
-    },
-    completedAt:{
-        type:Number
-    }
+app.post('/todos',(req,res)=>{
+    console.log(req.body);
+    var todo = new Todo({
+        text:req.body.text
+    });
+
+    todo.save().then((doc)=>{
+        res.send(doc);
+    },(e)=>{
+        res.send(e);
+    });
 });
 
+app.listen(3000,()=>{
+    console.log('starting from server',3000);
+});
+
+
+
+
+/*
 var newTodo =new Todo({
    text:'cook dinner'
 });
@@ -30,3 +39,15 @@ newTodo.save().then((doc)=>{
 },(e)=>{
 
 });
+
+
+
+
+var user = new User({
+   email:"howardzhai@gmail.com",
+    password:'12345'
+});
+
+user.save().then((doc)=>{
+
+});*/
