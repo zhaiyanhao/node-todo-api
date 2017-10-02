@@ -52,7 +52,7 @@ UserSchema.methods.toJSON = function () {
 };
 
 UserSchema.methods.generateAutoToken = function () {
-    var user  = this;
+    var user  = this;  //method is used for instance
     var access = "auth";
     var token = jwt.sign({_id:user._id.toHexString(),access},'secret word').toString();
     user.token.push({access,token});
@@ -60,6 +60,25 @@ UserSchema.methods.generateAutoToken = function () {
     return user.save().then(()=>{
         return token;
     });
+};
+
+UserSchema.statics.findByToken = function (token) {
+    //statics use for model
+    var User = this;
+    var decode;
+    try{
+        decode = jwt.verify(token,'secret word');
+    }catch (e){
+/*        return new Promise((resolve,reject)=>{
+            reject();
+            });*/
+            return Promise.reject('test failed');
+    }
+
+    return User.findOne({
+        _id:decode._id,
+        'token.token':token
+        });
 };
 var User  = mongoose.model('User',UserSchema);
 

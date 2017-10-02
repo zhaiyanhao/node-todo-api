@@ -12,6 +12,8 @@ var app = express();
 const port = process.env.PORT||3000;
 app.use(bodyParser.json());
 
+var {authenticate } = require('./middleware/authenticate');
+
 app.post('/todos',(req,res)=>{
     console.log(req.body);
     var todo = new Todo({
@@ -81,6 +83,24 @@ app.delete('/todos/:id',(req,res)=>{
         return res.status(404).send();
     });
 });
+
+
+
+/*Private route*/
+app.get('/user/me',authenticate,(req,res)=>{
+/*    var token = req.header('x-auth');
+
+    User.findByToken(token).then((user)=>{
+
+        if(!user){
+           return Promise.reject('ttttttt')
+        }
+        res.send(user);
+    }).catch((e)=>{
+
+    });*/
+    res.send(req.user);
+})
 
 app.patch('/todos/:id',(req,res)=>{
     var id = req.params.id;
